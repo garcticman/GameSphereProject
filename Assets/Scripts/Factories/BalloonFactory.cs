@@ -5,7 +5,7 @@ using Core;
 using UnityEngine;
 using Views;
 
-namespace Fabrics
+namespace Factories
 {
     public class BalloonFactory
     {
