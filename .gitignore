@@ -3,7 +3,7 @@ Logs/
 Temp/
 Debug/
 UserSettings/
-.idea/
+.idea
 
 *.sln
 *.csproj
