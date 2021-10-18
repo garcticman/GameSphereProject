@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f241916b8cc480cb5c111f0fc084264, type: 3}
+  m_Name: DifficultySettings
+  m_EditorClassIdentifier: 
+  difficulties:
+  - difficultyType: 0
+    scoreToReach: 0
+    growingSpeed: 1
+    spawnDelay: 2
+  - difficultyType: 1
+    scoreToReach: 5
+    growingSpeed: 1.5
+    spawnDelay: 0.5
+  - difficultyType: 2
+    scoreToReach: 15
+    growingSpeed: 1
+    spawnDelay: 0.25
