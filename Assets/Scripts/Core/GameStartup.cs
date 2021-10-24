@@ -10,6 +10,7 @@ namespace Core
 {
     public class GameStartup : MonoBehaviour
     {
+        [SerializeField] private Canvas canvas;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private BalloonView balloonViewPrefab;
         [SerializeField] private DifficultySettings difficultySettings;
@@ -35,7 +36,7 @@ namespace Core
 
         private void SetupSystems()
         {
-            var balloonFactory = new BalloonFactory(balloonViewPrefab, mainCamera, transform, _gameState);
+            var balloonFactory = new BalloonFactory(balloonViewPrefab, mainCamera, transform, _gameState, canvas);
             _systems.Add(new BalloonSpawnSystem(balloonFactory, _gameState, difficultySettings));
         }
 

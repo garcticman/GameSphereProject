@@ -14,32 +14,37 @@ namespace Views
     {
         private const float EnoughOffsetForBump = 0.01f;
 
-        [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Collider2D collider;
-        
         [SerializeField] private DifficultySettings difficultySettings;
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private float bottomOffset;
 
         private Camera _mainCamera;
         private GameState _gameState;
+        private Canvas _canvas;
 
         private Vector3 _targetScale;
         private Vector3 _startScale;
-
+        
         private float _growingSpeed;
+        private bool _isInitialized;
+        private Vector3 _leftBottomSpawnBorder;
+        private Vector3 _rightTopSpawnBorder;
 
-        private void Awake()
-        {
-            _startScale = transform.localScale;
-        }
-
-        public void SetData(Camera mainCamera, GameState gameState)
+        public void SetData(Camera mainCamera, GameState gameState, Canvas canvas)
         {
             _mainCamera = mainCamera;
             _gameState = gameState;
+            _canvas = canvas;
         }
 
         public override void Show()
         {
+            if (!_isInitialized)
+            {
+                _isInitialized = true;
+                Init();
+            }
+
             SetGrowingSpeed();
             SetTargetScale();
             SetRandomPosition();
@@ -47,6 +52,35 @@ namespace Views
             base.Show();
 
             _gameState.OnDifficultyChange += SetGrowingSpeed;
+        }
+
+        private void Init()
+        {
+            _startScale = transform.localScale;
+            InitSpawnBorders();
+        }
+
+        private void InitSpawnBorders()
+        {
+            var scaleFactor = _canvas.scaleFactor;
+            var sprite = spriteRenderer.sprite;
+
+            var bottomOffsetWithScaleFactor = bottomOffset * scaleFactor;
+
+            var spriteSize = new Vector2(
+                sprite.rect.width * _startScale.x,
+                sprite.rect.height * _startScale.y);
+
+            var screenSize = new Vector2(Screen.width, Screen.height);
+            var nearClipPlane = _mainCamera.nearClipPlane;
+
+            var leftBottomBorderScreen = new Vector3(spriteSize.x, spriteSize.y + bottomOffsetWithScaleFactor, nearClipPlane);
+            var rightTopBorderScreen = new Vector3(screenSize.x - spriteSize.x, screenSize.y - spriteSize.y, nearClipPlane);
+
+            _leftBottomSpawnBorder =
+                _mainCamera.ScreenToWorldPoint(leftBottomBorderScreen);
+            _rightTopSpawnBorder
+                = _mainCamera.ScreenToWorldPoint(rightTopBorderScreen);
         }
 
         public override void Hide()
@@ -69,27 +103,14 @@ namespace Views
 
         private void SetRandomPosition()
         {
-            var size = spriteRenderer.size;
-
-            var widthOffset = size.x;
-            var heightOffset = size.y;
-
-            var screenWidth = Screen.width - widthOffset;
-            var screenHeight = Screen.height - heightOffset;
-
-            var screenPosition = new Vector3(Random.Range(widthOffset, screenWidth),
-                Random.Range(heightOffset, screenHeight), _mainCamera.nearClipPlane);
-
-            var worldPosition = _mainCamera.ScreenToWorldPoint(screenPosition);
-            worldPosition.z = 0;
-
-            transform.position = worldPosition;
+            var position = new Vector3(Random.Range(_leftBottomSpawnBorder.x, _rightTopSpawnBorder.x),
+                Random.Range(_leftBottomSpawnBorder.y, _rightTopSpawnBorder.y), _leftBottomSpawnBorder.z);
+            transform.position = position;
         }
 
         private void OnValidate()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
-            collider = GetComponent<Collider2D>();
         }
 
         private void Update()
@@ -125,11 +146,6 @@ namespace Views
         private bool ReadyToBump()
         {
             return Vector3.Distance(transform.localScale, _targetScale) <= EnoughOffsetForBump;
-        }
-
-        private void OnMouseDown()
-        {
-            Debug.Log("HELLO");
         }
     }
 }

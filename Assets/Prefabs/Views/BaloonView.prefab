@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 8767598491219366887}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -96,9 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15f978b2a3124dbeba2d521ca7e6ade5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 8767598491219366886}
-  collider: {fileID: 3082396951548207111}
   difficultySettings: {fileID: 11400000, guid: 9f61ca1127f66f741b3a7f81ff90e3fe, type: 2}
+  spriteRenderer: {fileID: 8767598491219366886}
+  bottomOffset: 256
 --- !u!61 &3082396951548207111
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -116,12 +116,12 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 13, y: 16.80808}
+    oldSize: {x: 26, y: 33.61616}
     newSize: {x: 26, y: 33.61616}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 13, y: 16.80808}
+  m_Size: {x: 21.81, y: 30.6}
   m_EdgeRadius: 0

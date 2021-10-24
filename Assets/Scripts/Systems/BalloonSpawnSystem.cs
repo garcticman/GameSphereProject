@@ -8,7 +8,7 @@ namespace Systems
 {
     public class BalloonSpawnSystem : ISystem
     {
-        private DifficultySettings _difficultySettings;
+        private readonly DifficultySettings _difficultySettings;
         private readonly BalloonFactory _balloonFactory;
         private readonly GameState _gameState;
         

@@ -13,15 +13,18 @@ namespace Factories
         private readonly Camera _mainCamera;
         private readonly Transform _root;
         private readonly GameState _gameState;
+        private readonly Canvas _canvas;
 
         private readonly Stack<BalloonView> _balloonViewPool = new Stack<BalloonView>();
 
-        public BalloonFactory(BalloonView balloonViewPrefab, Camera mainCamera, Transform root, GameState gameState)
+        public BalloonFactory(BalloonView balloonViewPrefab, Camera mainCamera, Transform root, 
+            GameState gameState, Canvas canvas)
         {
             _balloonViewPrefab = balloonViewPrefab;
             _mainCamera = mainCamera;
             _root = root;
             _gameState = gameState;
+            _canvas = canvas;
         }
 
         public BalloonView SpawnBalloon()
@@ -32,14 +35,14 @@ namespace Factories
             }
 
             var balloonView = Object.Instantiate(_balloonViewPrefab, _root);
-            balloonView.SetData(_mainCamera, _gameState);
+            balloonView.SetData(_mainCamera, _gameState, _canvas);
             balloonView.OnHide += OnBalloonHideHandler;
 
             var balloonTouchController = new BalloonTouchController(_gameState);
             var balloonBumpController = new BalloonBumpController(_gameState);
-            
+
             balloonView.SetControllers(balloonTouchController, balloonBumpController);
-            
+
             return balloonView;
         }
 
