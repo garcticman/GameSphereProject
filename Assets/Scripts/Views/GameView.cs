@@ -13,10 +13,12 @@ namespace Views
         [SerializeField] private Button backButton;
         
         private ScoreService _scoreService;
+        private DifficultyService _difficultyService;
 
-        public void SetData(ScoreService scoreService)
+        public void SetData(ScoreService scoreService, DifficultyService difficultyService)
         {
             _scoreService = scoreService;
+            _difficultyService = difficultyService;
         }
 
         public override void Show()
@@ -24,6 +26,8 @@ namespace Views
             base.Show();
             backButton.onClick.AddListener(BackButtonClickHandler);
             _scoreService.OnScoreChange += Refresh;
+            _difficultyService.OnDifficultyChange += Refresh;
+            Refresh();
         }
 
         public override void Hide()
@@ -33,6 +37,10 @@ namespace Views
             if (_scoreService != null)
             {
                 _scoreService.OnScoreChange -= Refresh;
+            }
+            if (_difficultyService != null)
+            {
+                _difficultyService.OnDifficultyChange -= Refresh;
             }
         }
 
@@ -44,7 +52,7 @@ namespace Views
         private void Refresh()
         {
             score.text = _scoreService.Score.ToString();
-            difficulty.text = _scoreService.CurrentDifficulty.ToString();
+            difficulty.text = _difficultyService.CurrentDifficulty.ToString();
         }
     }
 }

@@ -9,36 +9,36 @@ using Views;
 
 namespace Systems
 {
-    public class BalloonSystem : IUpdateSystem, IInitSystem, IDestroySystem
+    public class EndlessGameSystem : IUpdateSystem, IInitSystem, IDestroySystem
     {
         private readonly DifficultySettings _difficultySettings;
         private readonly BalloonFactory _balloonFactory;
-        private readonly ScoreService _scoreService;
+        private readonly DifficultyService _difficultyService;
 
         private float _spawnDelay = 2;
-        private float _currentTime;
+        private float _nextBalloonSpawnTime;
 
         private readonly List<BalloonView> _existingBalloons = new List<BalloonView>();
 
-        public BalloonSystem(BalloonFactory balloonFactory, DifficultySettings difficultySettings,
-            ScoreService scoreService)
+        public EndlessGameSystem(BalloonFactory balloonFactory, DifficultySettings difficultySettings,
+            DifficultyService difficultyService)
         {
             _balloonFactory = balloonFactory;
             _difficultySettings = difficultySettings;
-            _scoreService = scoreService;
+            _difficultyService = difficultyService;
         }
 
         public void Init()
         {
-            _scoreService.OnDifficultyChange += OnDifficultyChangeHandler;
+            _difficultyService.OnDifficultyChange += SetActualDelay;
+            SetActualDelay();
         }
 
         public void Update()
         {
-            _currentTime += Time.deltaTime;
-            if (_currentTime > _spawnDelay)
+            if (_nextBalloonSpawnTime < Time.time)
             {
-                _currentTime = 0;
+                _nextBalloonSpawnTime = Time.time + _spawnDelay;
                 CreateBalloon();
             }
         }
@@ -49,12 +49,12 @@ namespace Systems
             {
                 _existingBalloons.First().Hide();
             }
-            _scoreService.OnDifficultyChange -= OnDifficultyChangeHandler;
+            _difficultyService.OnDifficultyChange -= SetActualDelay;
         }
 
-        private void OnDifficultyChangeHandler()
+        private void SetActualDelay()
         {
-            _spawnDelay = _difficultySettings.GetDifficulty(_scoreService.CurrentDifficulty).spawnDelay;
+            _spawnDelay = _difficultySettings.GetDifficulty(_difficultyService.CurrentDifficulty).spawnDelay;
         }
 
         private void CreateBalloon()

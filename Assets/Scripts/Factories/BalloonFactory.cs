@@ -16,21 +16,21 @@ namespace Factories
         private readonly BalloonTouchController _balloonTouchController;
         private readonly Camera _mainCamera;
         private readonly Transform _root;
-        private readonly ScoreService _scoreService;
+        private readonly DifficultyService _difficultyService;
         private readonly Canvas _canvas;
 
         private readonly Stack<BalloonView> _balloonViewPool = new Stack<BalloonView>();
 
         public BalloonFactory(BalloonView balloonViewPrefab, BalloonBumpController balloonBumpController,
             BalloonTouchController balloonTouchController, Camera mainCamera, Transform root,
-            ScoreService scoreService, Canvas canvas)
+            DifficultyService difficultyService, Canvas canvas)
         {
             _balloonViewPrefab = balloonViewPrefab;
             _balloonBumpController = balloonBumpController;
             _balloonTouchController = balloonTouchController;
             _mainCamera = mainCamera;
             _root = root;
-            _scoreService = scoreService;
+            _difficultyService = difficultyService;
             _canvas = canvas;
         }
 
@@ -43,7 +43,7 @@ namespace Factories
 
             var balloonView = Object.Instantiate(_balloonViewPrefab, _root);
 
-            balloonView.SetData(_mainCamera, _canvas, _scoreService);
+            balloonView.SetData(_mainCamera, _canvas, _difficultyService);
             balloonView.SetControllers(_balloonBumpController, _balloonTouchController);
 
             balloonView.OnHide += OnBalloonHideHandler;

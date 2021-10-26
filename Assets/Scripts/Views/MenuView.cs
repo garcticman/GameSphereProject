@@ -8,6 +8,9 @@ namespace Views
     public class MenuView : ViewBase
     {
         [SerializeField] private Button playButton;
+        [SerializeField] private Toggle endlessModeToggle;
+
+        public bool IsEndlessModeOn => endlessModeToggle.isOn;
 
         public override void Show()
         {

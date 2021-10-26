@@ -20,7 +20,6 @@ namespace Views
 
         private Camera _mainCamera;
         private Canvas _canvas;
-        private ScoreService _scoreService;
 
         private Vector3 _targetScale;
         private Vector3 _startScale;
@@ -29,12 +28,13 @@ namespace Views
         private bool _isInitialized;
         private Vector3 _leftBottomSpawnBorder;
         private Vector3 _rightTopSpawnBorder;
+        private DifficultyService _difficultyService;
 
-        public void SetData(Camera mainCamera, Canvas canvas, ScoreService scoreService)
+        public void SetData(Camera mainCamera, Canvas canvas, DifficultyService difficultyService)
         {
             _mainCamera = mainCamera;
             _canvas = canvas;
-            _scoreService = scoreService;
+            _difficultyService = difficultyService;
         }
 
         public override void Show()
@@ -51,7 +51,7 @@ namespace Views
 
             base.Show();
 
-            _scoreService.OnDifficultyChange += SetGrowingSpeed;
+            _difficultyService.OnDifficultyChange += SetGrowingSpeed;
         }
 
         private void Init()
@@ -89,13 +89,13 @@ namespace Views
 
         public override void Hide()
         {
-            _scoreService.OnDifficultyChange -= SetGrowingSpeed;
+            _difficultyService.OnDifficultyChange -= SetGrowingSpeed;
             base.Hide();
         }
 
         private void SetGrowingSpeed()
         {
-            _growingSpeed = difficultySettings.GetDifficulty(_scoreService.CurrentDifficulty).growingSpeed;
+            _growingSpeed = difficultySettings.GetDifficulty(_difficultyService.CurrentDifficulty).growingSpeed;
         }
 
         private void SetTargetScale()

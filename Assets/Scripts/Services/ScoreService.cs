@@ -1,49 +1,38 @@
 ﻿using System;
-using Settings;
-using Views;
+using FiniteStateMachine.Transitions;
 
 namespace Services
 {
-    public class ScoreService
+    public class ScoreService : IEndGameTransitionInvocator
     {
-        public event Action OnDifficultyChange;
         public event Action OnScoreChange;
-
-        private readonly DifficultySettings _difficultySettings;
-
-        private DifficultyType _currentDifficulty;
-
-        public DifficultyType CurrentDifficulty => _currentDifficulty;
+        public event Action OnEndGame;
 
         private int _score;
         public int Score => _score;
 
-        public ScoreService(DifficultySettings difficultySettings)
-        {
-            _difficultySettings = difficultySettings;
-        }
-        
+
         public void AddScore()
         {
             _score++;
-            TryToChangeDifficulty();
             OnScoreChange?.Invoke();
         }
 
         public void SubtractScore()
         {
             _score--;
-            TryToChangeDifficulty();
             OnScoreChange?.Invoke();
+
+            if (_score <= 0)
+            {
+                OnEndGame?.Invoke();
+            }
         }
 
-        private void TryToChangeDifficulty()
+        public void ClearScore()
         {
-            var newDifficulty = _difficultySettings.GetDifficultyByScore(_score);
-            if (_currentDifficulty == newDifficulty) return;
-            
-            _currentDifficulty = newDifficulty;
-            OnDifficultyChange?.Invoke();
+            _score = 0;
+            OnScoreChange?.Invoke();
         }
     }
 }
