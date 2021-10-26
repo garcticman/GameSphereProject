@@ -20,8 +20,12 @@ MonoBehaviour:
   - difficultyType: 1
     scoreToReach: 5
     growingSpeed: 1.5
-    spawnDelay: 0.5
+    spawnDelay: 1
   - difficultyType: 2
     scoreToReach: 15
-    growingSpeed: 1
+    growingSpeed: 2
+    spawnDelay: 0.5
+  - difficultyType: 3
+    scoreToReach: 40
+    growingSpeed: 2.5
     spawnDelay: 0.25

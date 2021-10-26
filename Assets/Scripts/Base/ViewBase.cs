@@ -7,13 +7,13 @@ namespace Base
     {
         public event Action<ViewBase> OnShow;
         public event Action<ViewBase> OnHide;
-        
+
         private IController[] _controllers;
+
 
         public virtual void Show()
         {
             gameObject.SetActive(true);
-            Refresh();
             OnShow?.Invoke(this);
         }
 
@@ -22,33 +22,20 @@ namespace Base
             gameObject.SetActive(false);
             OnHide?.Invoke(this);
         }
-        
-        public abstract void Refresh();
-        
+
         public void SetControllers(params IController[] controllers)
         {
             _controllers = controllers;
         }
 
-        protected void Interact<TController, TInteractData>(TInteractData interactData) where TController : IController
+        protected void Interact<TController>(Action<TController> action) where TController : IController
         {
             foreach (var controller in _controllers)
             {
-                if (!(controller is TController concreteController)) 
+                if (!(controller is TController concreteController))
                     continue;
-            
-                concreteController.OnInteract(interactData);
-            }
-        }
-        
-        protected void Interact<TController>() where TController : IController
-        {
-            foreach (var controller in _controllers)
-            {
-                if (!(controller is TController concreteController)) 
-                    continue;
-            
-                concreteController.OnInteract();
+
+                action.Invoke(concreteController);
             }
         }
     }

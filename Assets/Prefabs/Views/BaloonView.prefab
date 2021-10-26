@@ -99,6 +99,7 @@ MonoBehaviour:
   difficultySettings: {fileID: 11400000, guid: 9f61ca1127f66f741b3a7f81ff90e3fe, type: 2}
   spriteRenderer: {fileID: 8767598491219366886}
   bottomOffset: 256
+  topOffset: 128
 --- !u!61 &3082396951548207111
 BoxCollider2D:
   m_ObjectHideFlags: 0

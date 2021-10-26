@@ -1,25 +1,20 @@
 ﻿using Base;
-using Core;
+using Services;
 
 namespace Controllers
 {
     public class BalloonBumpController : IController
     {
-        private readonly GameState _gameState;
+        private readonly ScoreService _scoreService;
 
-        public BalloonBumpController(GameState gameState)
+        public BalloonBumpController(ScoreService scoreService)
         {
-            _gameState = gameState;
+            _scoreService = scoreService;
         }
 
-        public void OnInteract<T>(T interactData)
+        public void BalloonBump()
         {
-            _gameState.SubtractScore();
-        }
-
-        public void OnInteract()
-        {
-            _gameState.SubtractScore();
+            _scoreService.SubtractScore();
         }
     }
 }

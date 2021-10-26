@@ -1,28 +1,28 @@
 ﻿using System;
 using Settings;
+using Views;
 
-namespace Core
+namespace Services
 {
-    public class GameState
+    public class ScoreService
     {
         public event Action OnDifficultyChange;
         public event Action OnScoreChange;
 
         private readonly DifficultySettings _difficultySettings;
-        
+
         private DifficultyType _currentDifficulty;
-        
+
         public DifficultyType CurrentDifficulty => _currentDifficulty;
 
         private int _score;
-
         public int Score => _score;
 
-        public GameState(DifficultySettings difficultySettings)
+        public ScoreService(DifficultySettings difficultySettings)
         {
             _difficultySettings = difficultySettings;
         }
-
+        
         public void AddScore()
         {
             _score++;

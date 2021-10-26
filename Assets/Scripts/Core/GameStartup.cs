@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
-using Systems;
-using Base;
+﻿using Systems;
+using Controllers;
 using Factories;
+using FiniteStateMachine;
+using Services;
 using Settings;
+using FiniteStateMachine.States;
+using FiniteStateMachine.Transitions;
 using UnityEngine;
 using Views;
 
@@ -13,55 +16,93 @@ namespace Core
         [SerializeField] private Canvas canvas;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private BalloonView balloonViewPrefab;
+        [SerializeField] private GameView gameView;
+        [SerializeField] private MenuView menuView;
         [SerializeField] private DifficultySettings difficultySettings;
-        [SerializeField] private StatusBarView statusBarView;
 
-        private readonly List<ISystem> _systems = new List<ISystem>();
-        
+        private readonly SystemManager _systemManager = new SystemManager();
+        private readonly StateMachine _stateMachine = new StateMachine();
+        private SystemStateBinder _systemStateBinder;
         private GameState _gameState;
+        private MenuState _menuState;
+
+        private ScoreService _scoreService;
+
+        private PlayButtonController _playButtonController;
+        private BackButtonController _backButtonController;
+        private BalloonTouchController _balloonTouchController;
+        private BalloonBumpController _balloonBumpController;
 
         public void Awake()
         {
-            _gameState = new GameState(difficultySettings);
-            
-            SetupViews();
+            SetupControllers();
+            SetupStateMachine();
             SetupSystems();
+            SetupViews();
         }
 
-        private void SetupViews()
+        private void SetupStateMachine()
         {
-            statusBarView.SetData(_gameState);
-            statusBarView.Show();
+            _gameState = new GameState(gameView);
+            _menuState = new MenuState(menuView);
+
+            _stateMachine.AddState(_menuState);
+            _stateMachine.AddState(_gameState);
+
+            _stateMachine.AddTransition(new MenuToGameTransition(_menuState, _gameState, _playButtonController));
+            _stateMachine.AddTransition(new GameToMenuTransition(_gameState, _menuState, _backButtonController));
+
+            _stateMachine.ForceSet(_menuState);
+        }
+
+        private void SetupControllers()
+        {
+            _playButtonController = new PlayButtonController();
+            _backButtonController = new BackButtonController();
+            
+            _scoreService = new ScoreService(difficultySettings);
+            
+            _balloonTouchController = new BalloonTouchController(_scoreService);
+            _balloonBumpController = new BalloonBumpController(_scoreService);
         }
 
         private void SetupSystems()
         {
-            var balloonFactory = new BalloonFactory(balloonViewPrefab, mainCamera, transform, _gameState, canvas);
-            _systems.Add(new BalloonSpawnSystem(balloonFactory, _gameState, difficultySettings));
+            var balloonFactory = new BalloonFactory(balloonViewPrefab, _balloonBumpController, _balloonTouchController,
+                mainCamera, transform, _scoreService, canvas);
+            var balloonSystem = new BalloonSystem(balloonFactory, difficultySettings, _scoreService);
+
+            _systemManager.AddInitSystem(balloonSystem);
+            _systemManager.AddUpdateSystem(balloonSystem);
+            _systemManager.AddDestroySystem(balloonSystem);
+
+            _systemStateBinder = new SystemStateBinder(_systemManager, _stateMachine);
+            _systemStateBinder.BindInitSystem(balloonSystem, _gameState);
+            _systemStateBinder.BindUpdateSystem(balloonSystem, _gameState);
+            _systemStateBinder.BindDestroySystem(balloonSystem, _gameState);
+        }
+
+        private void SetupViews()
+        {
+            menuView.SetControllers(_playButtonController);
+            gameView.SetControllers(_backButtonController);
+            gameView.SetData(_scoreService);
         }
 
         private void Start()
         {
-            for (var index = 0; index < _systems.Count; index++)
-            {
-                _systems[index].Init();
-            }
+            _systemManager.Init();
         }
 
         private void Update()
         {
-            for (var index = 0; index < _systems.Count; index++)
-            {
-                _systems[index].Execute();
-            }
+            _systemManager.Update();
         }
 
         private void OnDestroy()
         {
-            for (var index = 0; index < _systems.Count; index++)
-            {
-                _systems[index].Destroy();
-            }
+            _systemManager.Destroy();
+            _systemStateBinder.Dispose();
         }
     }
 }

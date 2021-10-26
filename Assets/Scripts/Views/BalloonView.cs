@@ -1,6 +1,5 @@
 ﻿using Base;
 using Controllers;
-using Core;
 using Services;
 using Settings;
 using UnityEngine;
@@ -17,24 +16,25 @@ namespace Views
         [SerializeField] private DifficultySettings difficultySettings;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private float bottomOffset;
+        [SerializeField] private float topOffset;
 
         private Camera _mainCamera;
-        private GameState _gameState;
         private Canvas _canvas;
+        private ScoreService _scoreService;
 
         private Vector3 _targetScale;
         private Vector3 _startScale;
-        
+
         private float _growingSpeed;
         private bool _isInitialized;
         private Vector3 _leftBottomSpawnBorder;
         private Vector3 _rightTopSpawnBorder;
 
-        public void SetData(Camera mainCamera, GameState gameState, Canvas canvas)
+        public void SetData(Camera mainCamera, Canvas canvas, ScoreService scoreService)
         {
             _mainCamera = mainCamera;
-            _gameState = gameState;
             _canvas = canvas;
+            _scoreService = scoreService;
         }
 
         public override void Show()
@@ -51,7 +51,7 @@ namespace Views
 
             base.Show();
 
-            _gameState.OnDifficultyChange += SetGrowingSpeed;
+            _scoreService.OnDifficultyChange += SetGrowingSpeed;
         }
 
         private void Init()
@@ -66,6 +66,7 @@ namespace Views
             var sprite = spriteRenderer.sprite;
 
             var bottomOffsetWithScaleFactor = bottomOffset * scaleFactor;
+            var topOffsetWithScaleFactor = topOffset * scaleFactor;
 
             var spriteSize = new Vector2(
                 sprite.rect.width * _startScale.x,
@@ -74,8 +75,11 @@ namespace Views
             var screenSize = new Vector2(Screen.width, Screen.height);
             var nearClipPlane = _mainCamera.nearClipPlane;
 
-            var leftBottomBorderScreen = new Vector3(spriteSize.x, spriteSize.y + bottomOffsetWithScaleFactor, nearClipPlane);
-            var rightTopBorderScreen = new Vector3(screenSize.x - spriteSize.x, screenSize.y - spriteSize.y, nearClipPlane);
+            var leftBottomBorderScreen =
+                new Vector3(spriteSize.x, spriteSize.y + bottomOffsetWithScaleFactor, nearClipPlane);
+            
+            var rightTopBorderScreen = new Vector3(screenSize.x - spriteSize.x,
+                screenSize.y - spriteSize.y - topOffsetWithScaleFactor, nearClipPlane);
 
             _leftBottomSpawnBorder =
                 _mainCamera.ScreenToWorldPoint(leftBottomBorderScreen);
@@ -85,14 +89,13 @@ namespace Views
 
         public override void Hide()
         {
+            _scoreService.OnDifficultyChange -= SetGrowingSpeed;
             base.Hide();
-
-            _gameState.OnDifficultyChange -= SetGrowingSpeed;
         }
 
         private void SetGrowingSpeed()
         {
-            _growingSpeed = difficultySettings.GetDifficulty(_gameState.CurrentDifficulty).growingSpeed;
+            _growingSpeed = difficultySettings.GetDifficulty(_scoreService.CurrentDifficulty).growingSpeed;
         }
 
         private void SetTargetScale()
@@ -123,17 +126,17 @@ namespace Views
         {
             if (InputService.IsTouchOn(this, _mainCamera))
             {
-                Interact<BalloonTouchController>();
+                Interact<BalloonTouchController>(handler => handler.BalloonTouch());
                 Hide();
             }
         }
 
-        public override void Refresh()
+        private void Refresh()
         {
             Grow();
             if (ReadyToBump())
             {
-                Interact<BalloonBumpController>();
+                Interact<BalloonBumpController>(handler => handler.BalloonBump());
                 Hide();
             }
         }
