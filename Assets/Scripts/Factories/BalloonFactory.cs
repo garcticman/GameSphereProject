@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using Base;
 using Controllers;
-using Core;
 using Services;
-using FiniteStateMachine.States;
 using UnityEngine;
 using Views;
 

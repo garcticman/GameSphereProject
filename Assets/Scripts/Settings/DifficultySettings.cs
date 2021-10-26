@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace Settings
@@ -11,12 +10,23 @@ namespace Settings
 
         public DifficultyData GetDifficulty(DifficultyType difficultyType)
         {
-            if (difficulties.All(x => x.difficultyType != difficultyType))
+            var difficulty = GetDifficultyOrDefault(difficultyType);
+            if (difficulty != null) return difficulty;
+            
+            Debug.Log($"Difficulty with {difficultyType} not exist");
+            return new DifficultyData
             {
-                throw new Exception($"{nameof(DifficultySettings)} not contain difficulty with type: {difficultyType}");
-            }
+                difficultyType = DifficultyType.Easy,
+                growingSpeed = 2,
+                spawnDelay = 1,
+                scoreToReach = 0
+            };
+        }
 
-            return difficulties.First(x => x.difficultyType == difficultyType);
+        private DifficultyData GetDifficultyOrDefault(DifficultyType difficultyType)
+        {
+            var difficulty = difficulties.FirstOrDefault(x => x.difficultyType == difficultyType);
+            return difficulty;
         }
 
         public DifficultyType GetDifficultyByScore(int score)

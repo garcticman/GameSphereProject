@@ -3,7 +3,7 @@
 namespace Settings
 {
     [Serializable]
-    public struct DifficultyData
+    public class DifficultyData
     {
         public DifficultyType difficultyType;
         public int scoreToReach;
