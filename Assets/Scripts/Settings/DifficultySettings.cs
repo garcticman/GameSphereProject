@@ -13,7 +13,7 @@ namespace Settings
             var difficulty = GetDifficultyOrDefault(difficultyType);
             if (difficulty != null) return difficulty;
             
-            Debug.Log($"Difficulty with {difficultyType} not exist");
+            Debug.LogError($"Difficulty with {difficultyType} not exist");
             return new DifficultyData
             {
                 difficultyType = DifficultyType.Easy,

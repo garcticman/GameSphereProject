@@ -2040,6 +2040,7 @@ MonoBehaviour:
   timerView: {fileID: 111804485}
   endGameView: {fileID: 251341171}
   difficultySettings: {fileID: 11400000, guid: 9f61ca1127f66f741b3a7f81ff90e3fe, type: 2}
+  particleViewsDataBase: {fileID: 11400000, guid: 19bdc22dce948fc4b81b2b220c8110a9, type: 2}
 --- !u!1 &1581127517
 GameObject:
   m_ObjectHideFlags: 0

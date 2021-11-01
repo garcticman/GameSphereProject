@@ -48,6 +48,7 @@ namespace Views
             SetGrowingSpeed();
             SetTargetScale();
             SetRandomPosition();
+            transform.rotation = Quaternion.identity;
 
             base.Show();
 
@@ -126,7 +127,7 @@ namespace Views
         {
             if (InputService.IsTouchOn(this, _mainCamera))
             {
-                Interact<BalloonTouchController>(handler => handler.BalloonTouch());
+                Interact<BalloonTouchController>(handler => handler.BalloonTouch(transform.position));
                 Hide();
             }
         }
@@ -136,7 +137,7 @@ namespace Views
             Grow();
             if (ReadyToBump())
             {
-                Interact<BalloonBumpController>(handler => handler.BalloonBump());
+                Interact<BalloonBumpController>(handler => handler.BalloonBump(transform.position));
                 Hide();
             }
         }
