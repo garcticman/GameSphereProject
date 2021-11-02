@@ -30,7 +30,12 @@ namespace Factories
                 var transform = particle.transform;
                 transform.position = position;
                 transform.rotation = rotation;
-                
+
+                if (particle.main.playOnAwake)
+                {
+                    particle.Play();
+                }
+
                 return particle;
             }
 
@@ -48,8 +53,10 @@ namespace Factories
             if (!_particlesPool.TryGetValue(particleType, out var particleSystems))
             {
                 particleSystems = new Stack<ParticleSystem>();
+                _particlesPool[particleType] = particleSystems;
             }
 
+            particleSystem.Stop();
             particleSystems.Push(particleSystem);
         }
     }

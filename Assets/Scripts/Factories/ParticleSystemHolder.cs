@@ -17,13 +17,8 @@ namespace Factories
             particleSystem = GetComponent<ParticleSystem>();
         }
 
-        private void Update()
+        private void OnParticleSystemStopped()
         {
-            if (particleSystem.IsAlive())
-            {
-                return;
-            }
-            
             OnParticleSystemPause?.Invoke();
         }
     }

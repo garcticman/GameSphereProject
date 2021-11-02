@@ -27,6 +27,8 @@ namespace Core
         [SerializeField] private DifficultySettings difficultySettings;
         [SerializeField] private ParticleViewsDataBase particleViewsDataBase;
 
+        [SerializeField] private Transform vfxRoot;
+        
         private readonly SystemManager _systemManager = new SystemManager();
         private readonly StateMachine _stateMachine = new StateMachine();
         private SystemStateBinder _systemStateBinder;
@@ -67,7 +69,7 @@ namespace Core
             _playButtonController = new PlayButtonController();
             _backButtonController = new BackButtonController(_scoreService);
 
-            var particlesFactory = new ParticlesFactory(particleViewsDataBase, transform);
+            var particlesFactory = new ParticlesFactory(particleViewsDataBase, vfxRoot);
             
             _balloonTouchController = new BalloonTouchController(_scoreService, particlesFactory);
             _balloonBumpController = new BalloonBumpController(_scoreService, particlesFactory);
