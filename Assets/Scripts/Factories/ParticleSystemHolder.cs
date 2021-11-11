@@ -10,7 +10,7 @@ namespace Factories
 
         public ParticleSystem ParticleSystem => particleSystem;
 
-        public event Action OnParticleSystemPause;
+        public event Action OnParticleSystemStop;
 
         private void OnValidate()
         {
@@ -19,7 +19,7 @@ namespace Factories
 
         private void OnParticleSystemStopped()
         {
-            OnParticleSystemPause?.Invoke();
+            OnParticleSystemStop?.Invoke();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Settings;
 using UnityEngine;
 
@@ -42,7 +40,7 @@ namespace Factories
             var particleSystemPrefab = _particleViewsDataBase.GetParticle(particleType);
             var particleSystemHolder = Object.Instantiate(particleSystemPrefab, position, rotation, _root);
 
-            particleSystemHolder.OnParticleSystemPause += ()
+            particleSystemHolder.OnParticleSystemStop += ()
                 => OnParticleSystemPause(particleType, particleSystemHolder.ParticleSystem);
 
             return particleSystemHolder.ParticleSystem;

@@ -23,6 +23,8 @@ namespace Core
         [SerializeField] private GameView gameView;
         [SerializeField] private TimerView timerView;
         [SerializeField] private EndGameView endGameView;
+
+        [SerializeField] private SoundManager soundManager;
         
         [SerializeField] private DifficultySettings difficultySettings;
         [SerializeField] private ParticleViewsDataBase particleViewsDataBase;
@@ -56,6 +58,8 @@ namespace Core
             SetupSystems();
             SetupTransitions();
             SetupViews();
+            
+            soundManager.PlayMusic(SoundNames.MainMusic);
         }
 
         private void SetupServices()
@@ -71,7 +75,7 @@ namespace Core
 
             var particlesFactory = new ParticlesFactory(particleViewsDataBase, vfxRoot);
             
-            _balloonTouchController = new BalloonTouchController(_scoreService, particlesFactory);
+            _balloonTouchController = new BalloonTouchController(_scoreService, particlesFactory, soundManager);
             _balloonBumpController = new BalloonBumpController(_scoreService, particlesFactory);
         }
 
